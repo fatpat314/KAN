@@ -4,8 +4,48 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, accuracy_score
 from scipy.stats import t, ttest_ind
+import joblib
 
-def do_stats_stuff(disease, symptoms):
+# def do_stats_stuff(user_symptoms):
+#     model = joblib.load('disease_symptom_model.pkl')
+#     user_input = user_symptoms
+
+#     # Convert the user input to a dictionary with symptom values (0 or 1)
+#     symptoms_dict = {symptom: 1 if symptom.strip() in user_input else 0 for symptom in symptoms}
+#     user_input_df = pd.DataFrame([symptoms_dict])
+#     predicted_probabilities = model.predict_proba(user_input_df)
+#     predicted_disease = model.predict(user_input_df)
+#     print("Predicted Disease:", predicted_disease[0])
+#     class_probabilities = model.predict_proba(X_test)
+#     p_values = []
+
+#     for i in range(len(predicted_probabilities[0])):
+#         _, p_value = ttest_ind(class_probabilities[:, i], predicted_probabilities[0][i])
+#         p_values.append(p_value)
+#     significance_level = 0.05
+#     # Print p-values and significant diseases
+#     print("P-values and Significant Diseases:")
+#     disease_out = []
+#     p_value_out=[]
+
+#     for disease, p_value in zip(model.classes_, p_values):
+#         # print(f"{disease}: {p_value}")
+#         if p_value < significance_level:
+#             print(f"Significant Disease: {disease} P-value: {p_value}")
+#             disease_out.append(disease)
+#             p_value_out.append("{:.4f}".format(p_value))
+
+#     # Find the row corresponding to the predicted disease
+#     predicted_disease_row = df.loc[df['Disease'] == predicted_disease[0]]
+
+#     # Extract the correlating symptoms to the predicted disease
+#     correlating_symptoms = [symptom for symptom in symptoms if predicted_disease_row[symptom].values[0] == 1]
+
+#     print("Correlating Symptoms to Predicted Disease:")
+#     print(correlating_symptoms)
+#     return(disease_out, p_value_out, correlating_symptoms)
+
+def add_to_model(disease, symptoms):
     # Read the CSV file into a pandas DataFrame as input
     data = pd.read_csv('./updated_symptoms_and_disease.csv')
     data = data.apply(lambda x: x.str.strip() if x.dtype == "object" else x)

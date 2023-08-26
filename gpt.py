@@ -62,3 +62,17 @@ def GPT_disease_word_search(GPT_result):
         return jsonify(result)
     
     return(disease_names)
+
+def GPT_risk_factors(disease):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a Doctor"},
+            {"role": "user", "content": f"Give me risk factors related to {disease} in the form of a python list and say nothing else please"},
+        ]
+    )
+    result = []
+    for choice in response.choices:
+        result.append(choice.message.content)
+    print(result)
+    return(result)

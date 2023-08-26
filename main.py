@@ -7,8 +7,9 @@ from flask_jwt_extended import JWTManager, jwt_required, \
 import requests, names, random, threading, uuid, json
 import argparse
 
-from gpt import GPT_symptoms_disease_correlation, GPT_disease_info, GPT_request
-from stats import do_stats_stuff
+from gpt import GPT_symptoms_disease_correlation, GPT_disease_info, \
+                GPT_request, GPT_disease_word_search, GPT_risk_factors
+from stats import add_to_model #, do_stats_stuff
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = config.JWT_SECRET_KEY # change this to a random string in production
@@ -25,7 +26,6 @@ def home():
 @app.route('/disease_data', methods = ['GET', 'POST'])
 def disease_data():
     data = request.json.get('symptoms')
-    # print(data)
     disease_names = GPT_symptoms_disease_correlation(data)
     disease_names = disease_names[1:-1]
     print(disease_names)
@@ -34,7 +34,6 @@ def disease_data():
 @app.route('/disease_info', methods = ['GET', 'POST'])
 def disease_info():
     disease = request.json.get('disease')
-    # Get LLM memo
     response = GPT_disease_info(disease)
     print(response)
     return jsonify(response)
@@ -43,20 +42,15 @@ def disease_info():
 def disease_stats():
     data = request.get_json()
     disease = data['disease']
-    # symptoms_list = json.loads(data['symptoms'])
     symptoms = data['symptoms']
     # Reach out to CNM to get symptom names
     CNM_url_symptoms = f'{CNM_url}/get_symptom_names'
     data = {'symptoms': symptoms}
     symptom_names = requests.post(CNM_url_symptoms, json=data)
     symptom_names = symptom_names.json()
-    # symptoms = get_symptom_info(data['symptoms'])
-    # symptom_names_list = json.dumps(symptom_names)
-    
-    # print("STATS:", disease, symptom_names, type(symptom_names))
-    # print(response.json())
 
-    stats = do_stats_stuff(disease, symptom_names)
+    stats = add_to_model(disease, symptom_names)
+    # stats = do_stats_stuff(symptom_names)
 
     print(stats)
     return jsonify(stats)
@@ -68,6 +62,22 @@ def GPT_response():
     symptoms_list = data['symptoms_list']
     response = GPT_request(age, symptoms_list)
     return jsonify(response)
+
+@app.route('/GPT_disease_word_search', methods=['GET', 'POST'])
+def GPT_word_search():
+    data = request.get_json()
+    result = data['result']
+    response = GPT_disease_word_search(result)
+    return jsonify(response)
+
+@app.route('/GPT_risk_factors', methods=['GET', 'POST'])
+def risk_factors():
+    data = request.get_json()
+    disease = data['disease']
+    # print(disease)
+    response = GPT_risk_factors(disease)
+    return jsonify(response)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
