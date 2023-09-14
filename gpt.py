@@ -68,7 +68,7 @@ def GPT_risk_factors(disease):
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a Doctor"},
-            {"role": "user", "content": f"Give me risk factors related to {disease} in the form of a python list and say nothing else please"},
+            {"role": "user", "content": f"Return a python list of risk factors related to {disease} and say nothing else."},
         ]
     )
     result = []
