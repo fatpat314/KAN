@@ -69,6 +69,7 @@ def GPT_risk_factors(disease):
         messages=[
             {"role": "system", "content": "You are a Doctor"},
             {"role": "user", "content": f"Return a python list of risk factors related to {disease} and say nothing else."},
+            # Remove numbers, ., and -
         ]
     )
     result = []
