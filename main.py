@@ -8,7 +8,8 @@ import requests, names, random, threading, uuid, json
 import argparse
 
 from gpt import GPT_symptoms_disease_correlation, GPT_disease_info, \
-                GPT_request, GPT_disease_word_search, GPT_risk_factors
+                GPT_request, GPT_disease_word_search, GPT_risk_factors, \
+                GPT_key_symptoms
 from stats import add_to_model #, do_stats_stuff
 
 app = Flask(__name__)
@@ -76,6 +77,13 @@ def risk_factors():
     disease = data['disease']
     # print(disease)
     response = GPT_risk_factors(disease)
+    return jsonify(response)
+
+@app.route('/GPT_key_symptoms', methods=['GET', 'POST'])
+def get_key_symptoms():
+    data = request.get_json()
+    disease = data['disease']
+    response = GPT_key_symptoms(disease)
     return jsonify(response)
 
 

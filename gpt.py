@@ -8,7 +8,7 @@ def GPT_request(age, symptoms):
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a Doctor"},
-            {"role": "user", "content": f"The patient is {age} years old and experiencing {str(symptoms)}. What is the diagnosis?"},
+            {"role": "user", "content": f"The patient is {age} years old and experiencing {str(symptoms)}. What is the possible diagnosis for the disease?"},
         ]
     )
     result = []
@@ -23,7 +23,7 @@ def GPT_symptoms_disease_correlation(symptoms):
         messages=[
             {"role": "system", "content": "You are a Doctor"},
             # {"role": "user", "content": f"The patient is {age} years old and experiencing {str(symptoms)}. What is the diagnosis?"},
-            {"role": "system", "content": f"Return a list of various diseases associated with these symptoms in the format of a python list and say nothing else please. {str(symptoms)}"}
+            {"role": "system", "content": f"Return a list of various diseases that manifest these symptoms. Return the list in the format of a python list and say nothing else please. {str(symptoms)}"}
         ]
     )
     result = []
@@ -75,5 +75,19 @@ def GPT_risk_factors(disease):
     result = []
     for choice in response.choices:
         result.append(choice.message.content)
-    print(result)
+    # print(result)
+    return(result)
+
+def GPT_key_symptoms(disease):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a Doctor"},
+            {"role": "user", "content": f"Return a python list of the most likely symptoms that will indicate {disease} rather then any other disease, and say nothing else. Follow this format: ['symp1, symp2,symp3]"},
+            # Remove numbers, ., and -
+        ]
+    )
+    result = []
+    for choice in response.choices:
+        result.append(choice.message.content)
     return(result)
