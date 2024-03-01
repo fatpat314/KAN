@@ -4,7 +4,7 @@ import openai
 from flask import Flask, jsonify, request, session, g
 from flask_jwt_extended import JWTManager, jwt_required, \
                                create_access_token, get_jwt_identity
-import requests, names, random, threading, uuid, json
+import requests, random, threading, uuid, json
 import argparse
 
 from gpt import GPT_symptoms_disease_correlation, GPT_disease_info, \
@@ -14,14 +14,15 @@ from stats import add_to_model #, do_stats_stuff
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = config.JWT_SECRET_KEY # change this to a random string in production
-CNM_url = "http://localhost:6000"
+CNM_url = "http://localhost:8010"
+# CNM_url = "https://cognitive-network-manager-rdwl5upzra-uw.a.run.app"
 jwt = JWTManager(app)
 load_dotenv()
 
 @app.route('/', methods = ['GET'])
 def home():
     if(request.method == 'GET'):
-        data = "hello Class!"
+        data = "Knowledge Acquisition Node"
         return jsonify({'data': data})
 
 @app.route('/disease_data', methods = ['GET', 'POST'])
